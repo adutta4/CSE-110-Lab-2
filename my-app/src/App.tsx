@@ -1,6 +1,7 @@
 import './App.css';
 import { Label, Note } from "./types"; // Import the Label type from the appropriate module
 import { dummyNotesList } from "./constants"; // Import the dummyNotesList from the appropriate module
+import ToggleTheme from "./hooksExercise";
 
 function App() {
  return (
@@ -18,6 +19,7 @@ function App() {
            key={note.id}
            className="note-item">
            <div className="notes-header">
+            <button>♡</button>
              <button>x</button>
            </div>
            <h2> {note.title} </h2>
@@ -26,6 +28,7 @@ function App() {
          </div>
        ))}
      </div>
+     <ToggleTheme/> 
    </div>
 
  );
