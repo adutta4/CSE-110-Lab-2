@@ -10,6 +10,8 @@ export enum Label {
     title: string;
     content: string;
     label: Label;
+    delete: boolean,
+    liked: boolean;
  };
  
  
