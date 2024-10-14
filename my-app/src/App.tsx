@@ -1,10 +1,12 @@
 import './App.css';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useContext } from 'react';
 import { Label, Note } from "./types"; // Import the Label type from the appropriate module
 import { dummyNotesList } from "./constants"; // Import the dummyNotesList from the appropriate module
-import ToggleTheme from "./hooksExercise";
+import { ThemeContext, themes } from "./ThemeContext";
 
 function App() {
+
+  const theme = useContext(ThemeContext);
   let initialFavList: string[] = [];
   const [favoritesList, setFavoritesList] = useState(initialFavList);
   const [notes, setNotes] = useState(dummyNotesList);
@@ -17,6 +19,13 @@ function App() {
     liked: false
   };
   const [createNote, setCreateNote] = useState(initialNote);
+
+  const [currentTheme, setCurrentTheme] = useState(themes.light);
+
+  const toggleTheme = () => {
+    setCurrentTheme(currentTheme === themes.light ? themes.dark : themes.light);
+    console.log(currentTheme)
+  };
 
   const createNoteHandler = (event: React.FormEvent) => {
     event.preventDefault();
@@ -39,7 +48,7 @@ function App() {
     }
 
     const faveNoteList = notes.filter((note) => note.liked).map(note => note.title)
-    
+
     setFavoritesList(faveNoteList)
     console.log(notes)
   }
@@ -60,7 +69,12 @@ function App() {
   };
 
   return (
-    <div className='app-container'>
+    <ThemeContext.Provider value={currentTheme}>
+    <div style={{
+       background: currentTheme.background,
+       color: currentTheme.foreground,
+       padding: "20px",
+     }} className='app-container'>
       <form className="note-form" onSubmit={createNoteHandler}>
         <div>
           <input
@@ -70,7 +84,6 @@ function App() {
             required>
           </input>
         </div>
-
         <div>
           <textarea
             onChange={(event) =>
@@ -94,29 +107,47 @@ function App() {
         <div><button type="submit">Create Note</button></div>
       </form>
 
-      <div className="notes-grid">
+      <div style={{
+       background: currentTheme.background,
+       color: currentTheme.foreground,
+       padding: "20px",
+     }}className="notes-grid">
         {notes.map((note) => (
-          <div
+          <div style={{
+            background: currentTheme.background,
+            color: currentTheme.foreground,
+            padding: "20px",
+          }}
             key={note.id}
             className="note-item"
           >
-            <div className="notes-header">
-              <button onClick={() => handleLikeClick(note.id, note.title)}>{note.liked ? '❤️' : '♡'}</button>
-              <button onClick={() => handleDeleteClick(note.id)}>x</button>
-            </div>
-            <h2 contentEditable='true'> {note.title} </h2>
-            <p contentEditable='true'> {note.content} </p>
-            <p contentEditable='true'> {note.label} </p>
+              <div className="notes-header">
+                <button style={{
+       background: currentTheme.background,
+       color: currentTheme.foreground,
+     }} onClick={() => handleLikeClick(note.id, note.title)}>{note.liked ? '❤️' : '♡'}</button>
+                <button style={{
+       background: currentTheme.background,
+       color: currentTheme.foreground,
+     }} onClick={() => handleDeleteClick(note.id)}>x</button>
+              </div>
+              <h2 contentEditable='true'> {note.title} </h2>
+              <p contentEditable='true'> {note.content} </p>
+              <p contentEditable='true'> {note.label} </p>
           </div>
         ))}
       </div>
       <div>
         <h2>Favorites List</h2>
         {favoritesList.map((fave) =>
-        <p>{fave}</p>
+          <p>{fave}</p>
         )}
       </div>
-    </div>);
+      <div>
+        <button onClick={toggleTheme}> Toggle Theme </button>
+      </div>
+    </div>
+    </ThemeContext.Provider>);
 }
 
 export default App;
